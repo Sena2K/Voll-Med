@@ -3,13 +3,14 @@ package med.voll.api.controller;
 import jakarta.transaction.Transactional;
 import med.voll.api.cliente.ClienteRepository;
 import med.voll.api.cliente.DadosCadastroClientes;
+import med.voll.api.cliente.DadosListagemClientes;
+import med.voll.api.medico.DadosListagemMedico;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/clientes")
@@ -23,5 +24,10 @@ public class ClienteController {
     @PostMapping
     public void cadastrar(@RequestBody DadosCadastroClientes cliente){
         System.out.println(cliente);
+    }
+
+    @GetMapping
+    public Page<DadosListagemClientes> listar(Pageable pageable){
+        return repository.findAll(pageable).map(DadosListagemClientes::new);
     }
 }
