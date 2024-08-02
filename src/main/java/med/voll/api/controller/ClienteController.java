@@ -2,6 +2,7 @@ package med.voll.api.controller;
 
 import jakarta.transaction.Transactional;
 import med.voll.api.cliente.ClienteRepository;
+import med.voll.api.cliente.DadosAtualizacaoCliente;
 import med.voll.api.cliente.DadosCadastroClientes;
 import med.voll.api.cliente.DadosListagemClientes;
 import med.voll.api.medico.DadosListagemMedico;
@@ -28,6 +29,22 @@ public class ClienteController {
 
     @GetMapping
     public Page<DadosListagemClientes> listar(Pageable pageable){
-        return repository.findAll(pageable).map(DadosListagemClientes::new);
+        return repository.findByAtivoTrue(pageable).map(DadosListagemClientes::new);
     }
+
+    @PutMapping
+    @Transactional
+    public void atualizar(@RequestBody DadosAtualizacaoCliente dados){
+        var cliente = repository.getReferenceById(dados.id());
+        cliente.atualizarInfomacoes(dados);
+    }
+
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void excluir(Long id){
+        var cliente = repository.getReferenceById(id);
+        cliente.excluir();
+    }
+
 }

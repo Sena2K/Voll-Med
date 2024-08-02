@@ -26,13 +26,32 @@ public class Medico {
     private Especialidade especialidade;
     @Embedded //Isso pq endereco é um objeto nosso, logo usamos o embedded
     private Endereco endereco;
+    private boolean ativo;
 
     public Medico(DadosCadastroMedicos dados) {
+        this.ativo = true;
         this.nome = dados.nome();
         this.email = dados.email();
         this.crm = dados.crm();
         this.telefone = dados.telefone();
         this.especialidade = dados.especialidade();
         this.endereco = new Endereco(dados.endereco());
+    }
+
+    public void atualizarInformacoes(DadosAtualizacaoMedico dados) {
+        //campos sao opcionais, entao se eu enviar algo nulo ele vai substituir, logo nós temos que fazer as verificações pra ver se o nome ta nulo
+        if (dados.nome() != null) {
+            this.nome = dados.nome();
+        }
+        if (dados.telefonem() != null) {
+            this.telefone = dados.telefonem();
+        }
+        if (dados.endereco() != null) {
+            this.endereco.atualizarInformacoes(dados.endereco());
+        }
+    }
+
+    public void excluir() {
+        this.ativo = false;
     }
 }
