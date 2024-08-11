@@ -1,9 +1,9 @@
-package med.voll.api.cliente;
+package med.voll.api.domain.cliente;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import med.voll.api.endereco.DadosEndereco;
+import med.voll.api.domain.endereco.DadosEndereco;
 
 public record DadosCadastroClientes(
         @NotBlank String nome,

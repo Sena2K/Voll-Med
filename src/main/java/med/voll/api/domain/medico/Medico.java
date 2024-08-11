@@ -1,8 +1,8 @@
-package med.voll.api.medico;
+package med.voll.api.domain.medico;
 
 import jakarta.persistence.*;
 import lombok.*;
-import med.voll.api.endereco.Endereco;
+import med.voll.api.domain.endereco.Endereco;
 
 //Teoricamente nossa entidade é nosso "objeto" no banco de dados, todas as informações do banco de dados
 //Devem ser representadas na nossa entidade :)))
@@ -22,14 +22,16 @@ public class Medico {
     private String telefone;
     private String crm;
 
-    @Enumerated(EnumType.STRING) //Nosso enum é do tipo String
+    @Enumerated(EnumType.STRING) // Nosso enum é do tipo String
     private Especialidade especialidade;
-    @Embedded //Isso pq endereco é um objeto nosso, logo usamos o embedded
+
+    @Embedded // Isso pq endereco é um objeto nosso, logo usamos o embedded
     private Endereco endereco;
-    private boolean ativo;
+
+    private Boolean ativo; // Alterado de boolean para Boolean
 
     public Medico(DadosCadastroMedicos dados) {
-        this.ativo = true;
+        this.ativo = true; // Garantir que ativo tem um valor padrão
         this.nome = dados.nome();
         this.email = dados.email();
         this.crm = dados.crm();
@@ -39,7 +41,7 @@ public class Medico {
     }
 
     public void atualizarInformacoes(DadosAtualizacaoMedico dados) {
-        //campos sao opcionais, entao se eu enviar algo nulo ele vai substituir, logo nós temos que fazer as verificações pra ver se o nome ta nulo
+        // Campos são opcionais, então se eu enviar algo nulo ele vai substituir, logo nós temos que fazer as verificações pra ver se o nome tá nulo
         if (dados.nome() != null) {
             this.nome = dados.nome();
         }
@@ -48,6 +50,9 @@ public class Medico {
         }
         if (dados.endereco() != null) {
             this.endereco.atualizarInformacoes(dados.endereco());
+        }
+        if (dados.ativo() != null) { // Verifique se o valor de ativo não é nulo
+            this.ativo = dados.ativo();
         }
     }
 
