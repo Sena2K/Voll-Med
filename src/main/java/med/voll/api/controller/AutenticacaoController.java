@@ -8,6 +8,7 @@ import med.voll.api.infra.security.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,12 +26,18 @@ public class AutenticacaoController {
     private TokenService tokenService;
 
     @PostMapping
-    public ResponseEntity efetuarLogin(@RequestBody @Valid DadosAutenticacao dados){
-        var Autoken = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
-    var authentication = manager.authenticate(Autoken);
-    var tokenJWT = tokenService.gerarToken((Usuario) authentication.getPrincipal());
-
-    return ResponseEntity.ok(new DadosTokenJWT(tokenJWT));
+    public ResponseEntity<?> efetuarLogin(@RequestBody @Valid DadosAutenticacao dados){
+        try {
+            var autToken = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
+            var authentication = manager.authenticate(autToken);
+            var tokenJWT = tokenService.gerarToken((Usuario) authentication.getPrincipal());
+            return ResponseEntity.ok(new DadosTokenJWT(tokenJWT));
+        } catch (BadCredentialsException e) {
+            // Erro de autenticação
+            return ResponseEntity.status(401).body("Credenciais inválidas");
+        } catch (Exception e) {
+            // Outros erros
+            return ResponseEntity.status(500).body("Erro interno do servidor");
+        }
     }
-
 }
